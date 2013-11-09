@@ -1,0 +1,6 @@
+-r all.txt
+django-debug-toolbar
+django-extensions
+ipython
+werkzeug
+epdb

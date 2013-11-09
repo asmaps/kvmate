@@ -1,0 +1,11 @@
+# django with extensions
+django
+# celery
+django-celery
+celery
+numpy
+# utility
+xmltodict
+salt
+# for postgres
+psycopg2
