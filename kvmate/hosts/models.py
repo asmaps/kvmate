@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from .libvirt import LibvirtHelpers
 
 class Host(models.Model):
     hostname = models.CharField(max_length=30, primary_key=True)
@@ -32,4 +33,5 @@ class Host(models.Model):
 def adjust_host(sender, **kwargs):
     trigger_fields = ['vcpus', 'ram', 'diskspace', 'autostart', 'persistent']
     updates = [trigger for trigger in kwargs['update_fields'] if trigger in trigger_fields]
+    backend = LibvirtHelpers()
     backend.adjust(kwargs['instance'], updates)
