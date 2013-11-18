@@ -8,7 +8,7 @@ class Host(models.Model):
     is_on = models.BooleanField()
     # libvirt definitions (to be enforced on the hypervisor)
     vcpus = models.PositiveSmallIntegerField()
-    ram = models.PositiveIntegerField()
+    memory = models.PositiveIntegerField()
     autostart = models.BooleanField()
     persistent = models.BooleanField()
 
@@ -19,6 +19,9 @@ class Host(models.Model):
     def halt(self):
         self.is_on = False
         self.save(update_fields=['is_on'])
+
+    def reboot(self):
+        LibvirtBackend.reboot(self)
 
     def kill(self):
         self.is_on = False
@@ -43,7 +46,7 @@ class Host(models.Model):
                 'name' : LibvirtBackend.set_name,
                 'is_on' : LibvirtBackend.set_state,
                 'vcpus' : LibvirtBackend.set_vcpus,
-                'ram' : LibvirtBackend.set_ram,
+                'memory' : LibvirtBackend.set_memory,
                 'autostart' : LibvirtBackend.set_autostart,
                 'persistent' : LibvirtBackend.set_persistent
                 }
