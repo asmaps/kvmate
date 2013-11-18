@@ -35,10 +35,46 @@ class LibvirtBackend():
             self.logger.debug(get_error_message())
 
     def set_name(self, host, old_name):
-        pass
+        #TODO make critical error less critical
+        '''
+        renames a libvirt domain by redefining it
+        :returns: 1 if no change was required, 0 if successful, -1 if there was an error
+        '''
+        if old_name == host.name:
+            self.logger.warning('unnesccessary set_name for %s' % host.name)
+            return 1
+        old_domain = self._get_domain(old_name)
+        if old_domain.isActive():
+            self.logger.error('cannot change the name of a running domain')
+            host.name = old_name
+            host.save()
+            return -1
+        else:
+            try:
+                xml = xmltodict.parse(domain.XMLDesc(0))
+                old_domain.undefine()
+                xml.replace('<name>' + old_name + '</name>', '<name>' + host.name + '</name>')
+                libvirt.defineXML(xml)
+            except libvirt.libvirtError as e:
+                self.logger.critical('set_name %s (old: %s) failed' % (host.name, old_name))
+                self.logger.critical("check the domain definition's integrity on the hypervisor")
+                self.logger.critical(e.get_error_message())
+                return -1
+        return 0 # all is fine
 
     def set_state(self, host):
-        pass
+        '''
+        Adapt a domains status to the is_on value in the database
+        :returns: 1 if no change was required, 0 if successful, -1 if there was an error
+        '''
+        domain = self._get_domain(host.name)
+        if host.is_on and not domain.isActive():
+            return self.start(host)
+        elif not host.is_on and domain.isActive():
+            return self.shutdown(host)
+        else:
+            self.logger.warning('unnesccessary set_state for %s' % host.name)
+            return 1
 
     def set_vcpus(self, host):
         pass
@@ -60,7 +96,7 @@ class LibvirtBackend():
                 self.logger.error(e.get_error_message())
                 return -1
         self.logger.info('set_memory run for %s' % host.name)
-        return 0
+        return 0 # all is fine
 
     def set_autostart(self, host):
         '''
@@ -79,7 +115,7 @@ class LibvirtBackend():
                 self.logger.error(e.get_error_message())
                 return -1
         self.logger.info('set_autostart run for %s' % host.name)
-        return 0
+        return 0 # all is fine
 
     def set_persistent(self, host):
         pass
@@ -121,6 +157,25 @@ class LibvirtBackend():
                 return -1
             self._terminate_vnc(host)
         self.logger.info('reboot run for %s' % host.name)
+        return 0 # all is fine
+
+    def shutdown(self, host):
+        '''
+        shuts a domain down
+        :returns: 1 if the domain is already stopped, 0 if successful, -1 if there was an error
+        '''
+        domain = self._get_domain(host.name)
+        if not domain.isActive():
+            self.logger.warning('unnesccessary shutdown for %s' % host.name)
+            return 1
+        else:
+            try:
+                domain.shutdown()
+            except libvirt.libvirtError as e:
+                self.logger.error('shutdown failed for %s with:' % host.name)
+                self.logger.error(e.get_error_message())
+                return -1
+        self.logger.info('shutdown run for %s' % host.name)
         return 0 # all is fine
 
     def destroy(self, host):
