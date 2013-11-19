@@ -1,10 +1,11 @@
-from django.db import models
 import logging
+from django.db import models
 
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_out
 from django.dispatch import receiver
 from celery.task.control import revoke
+from host.models import Host
 
 class VNC(models.Model):
     host = models.OneToOneField(Host,primary_key=True)

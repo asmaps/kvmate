@@ -1,9 +1,6 @@
+import logging
 import libvirt
 from celery.task import control as taskcontrol
-# util
-import logging
-# errors
-from libvirt import libvirtError
 from django.core.exceptions import ObjectDoesNotExist
 
 class LibvirtBackend():
@@ -18,7 +15,7 @@ class LibvirtBackend():
         try:
             domain = self.conn.lookupByName(name)
             return domain
-        except libvirtError as e:
+        except libvirt.libvirtError as e:
             print 'libvirt failed for host ' + name + ' with:'
             print str(e.get_error_code()) + ': ' + e.get_error_message()
 
