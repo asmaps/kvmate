@@ -4,7 +4,7 @@ from django.dispatch import receiver
 from backends.libvirt import LibvirtBackend
 
 class Host(models.Model):
-    name = models.CharField(max_length=64)
+    name = models.CharField(unique = True, max_length=64)
     is_on = models.BooleanField()
     # libvirt definitions (to be enforced on the hypervisor)
     vcpus = models.PositiveSmallIntegerField()
