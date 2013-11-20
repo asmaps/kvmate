@@ -17,8 +17,10 @@ class VNC(models.Model):
 
 @receiver(user_logged_out)
 def on_logout(sender, **kwargs):
-    logger = logging.getLogger(__name__)
     user = kwargs['user']
+    if user is None:
+        return
+    logger = logging.getLogger(__name__)
     logger.info('user %s logged out' % user.username)
     for conn in VNC.objects.all():
         if user in conn.users.all():
