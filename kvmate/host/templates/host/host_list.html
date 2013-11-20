@@ -6,17 +6,17 @@
 class="active"
 {% endblock %}
 {% block 'content' %}
-<table class="table table-bordered table-hover">
+<table class="table table-bordered table-hover" style="margin-top:-41px">
     <thead>
         <tr>
-            <th class='header'><strong>Name</strong></th>
+            <th class="header"><strong>Name</strong></th>
             <th><strong>Functions</strong></th>
         </tr>
     </thead>
     <tbody>
     {% for host in object_list %}
         <tr class="{% if host.is_on %}success{% else %}error{% endif %}">
-            <td>{{ host.hostname }}</td>
+            <td>{{ host.name }}</td>
             <td>lol</td>
         </tr>
     {% endfor %}

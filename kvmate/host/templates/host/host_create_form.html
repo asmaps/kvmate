@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+{% block 'head' %}
+<title>kvmate - create a new host</title>
+{% endblock %}
+{% block 'acreate' %}
+class="active"
+{% endblock %}
+{% block 'content' %}
+<div class="row">
+    <div class="col-md-4 col-md-offset-1">
+        <form action="" method="post">
+            {{ form|bootstrap }}
+            {% csrf_token %}
+            <input class="btn btn-lg btn-primary pull-right" type="submit" value="Create" />
+        </form>
+    </div>
+</div>
+{% endblock %}
