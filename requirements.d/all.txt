@@ -1,9 +1,10 @@
 # django with extensions
 django
 django-braces
+django-bootstrap-form
 # celery
 django-celery
-celery
+celery[redis]
 numpy
 # utility
 xmltodict
