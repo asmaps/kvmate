@@ -7,6 +7,7 @@ class LibvirtBackend():
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
+        self.conn = libvirt.open('qemu:///system')
 
     def _get_domain(self, name):
         '''
