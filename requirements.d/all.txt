@@ -1,5 +1,6 @@
 # django with extensions
 django
+django-braces
 # celery
 django-celery
 celery

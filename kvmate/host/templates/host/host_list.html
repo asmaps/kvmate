@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block 'head' %}
+<title>kvmate - your hosts</title>
+{% endblock %}
+{% block 'ahosts' %}
+class="active"
+{% endblock %}
+{% block 'content' %}
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th class='header'><strong>Name</strong></th>
+            <th><strong>Functions</strong></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for host in object_list %}
+        <tr class="{% if host.is_on %}success{% else %}error{% endif %}">
+            <td>{{ host.hostname }}</td>
+            <td>lol</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

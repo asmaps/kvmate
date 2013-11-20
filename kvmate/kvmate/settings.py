@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = (
     'kvmate',
     'host',
+    'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+        <script src="http://codeorigin.jquery.com/jquery-2.0.3.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+        {% block 'head' %}{% endblock %}
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-static-top" role="navigation" style='margin-bottom:-41px'>
+            <ul class="nav navbar-nav navbar-left">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/hosts">kvmate</a>
+                </div>
+                <li {% block 'ahosts' %}{% endblock %}><a href="/hosts">Hosts</a></li>
+                <li {% block 'acreate' %}{% endblock %}><a href="/create">Create</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% block 'navbar-right' %}
+                <!-- TODO: move to login required views
+                <li class='dropdown'>
+                    <a class="dropdown-toggle" data-toggle="dropdown">username<b class="caret"></b></a>
+                    <ul class='dropdown-menu'>
+                        <li><a href='/logout'>Sign out</a></li>
+                    </ul>
+                </li>
+                -->
+                <li><button type="button" class="btn btn-default navbar-btn" onclick="location.href='/login';" style="margin-right:8px">Sign in</button></li>
+                {% endblock %}
+            </ul>
+        </nav>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li id="message_{{ forloop.counter }}"{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% block 'content' %}{% endblock %}
+    </body>
+</html>
