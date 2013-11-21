@@ -14,6 +14,7 @@ BROKER_URL = 'redis://localhost:6379/0'
 CELERYD_CONCURRENCY=10
 
 LOGIN_URL='/login'
+LOGIN_REDIRECT_URL='/'
 LOGOUT_URL='/logout'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
