@@ -5,21 +5,42 @@
 {% block 'ahosts' %}
 class="active"
 {% endblock %}
+{% block 'navbar-right' %}
+<form class="navbar-form navbar-left" role="search">
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="search hosts..." name="q">
+    </div>
+</form>
+{% endblock %}
 {% block 'content' %}
-<table class="table table-bordered table-hover" style="margin-top:-41px">
-    <thead>
-        <tr>
-            <th class="header"><strong>Name</strong></th>
-            <th><strong>Functions</strong></th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for host in object_list %}
-        <tr class="{% if host.is_on %}success{% else %}error{% endif %}">
-            <td>{{ host.name }}</td>
-            <td>lol</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th><strong>Name</strong></th>
+                    <th><strong>Functions</strong></th>
+                    <th><strong>Power</strong></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for host in object_list %}
+                <tr class="{% if host.is_on %}success{% else %}danger{% endif %}">
+                    <td>{{ host.name }}</td>
+                    <td><a class='btn btn-xs btn-primary' href='{% url 'info' host.name %}'>Info</a></td>
+                    <td>
+                        {% if host.is_on %}
+                        <a class='btn btn-xs btn-danger' href='{% url 'action' host.name "shutdown"%}'>Shutdown</a>
+                        <a class='btn btn-xs btn-danger' href='{% url 'action' host.name "reboot"%}'>Reboot</a>
+                        <a class='btn btn-xs btn-danger' href='{% url 'action' host.name "kill"%}'>Forceoff</a>
+                        {% else %}
+                        <a class='btn btn-xs btn-success' href='{% url 'action' host.name "start"%}'>Start</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}
