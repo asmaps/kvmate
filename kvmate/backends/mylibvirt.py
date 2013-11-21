@@ -29,8 +29,7 @@ class LibvirtBackend():
             host.vnc.delete()
             host.save()
         except ObjectDoesNotExist as e:
-            self.logger.debug('tried terminating a nonexistant vnc process:')
-            self.logger.debug(get_error_message())
+            self.logger.debug('tried terminating a nonexistant vnc process')
 
     def set_name(self, host, old_name):
         #TODO make critical error less critical
