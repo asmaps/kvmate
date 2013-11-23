@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import redirect
+from django.http import HttpResponse
 from django.views.generic import View, ListView, DetailView, CreateView
 from django.views.generic.edit import ModelFormMixin
 from .models import Host
@@ -21,7 +22,6 @@ class HostActionView(LoginRequiredMixin, View):
         host = Host.objects.get(name=name)
         if action == 'start' or action == 'poweron':
             host.start()
-            return redirect('info', name=name)
         elif action == 'reboot' or action == 'restart':
             messages.add_message(request, messages.ERROR, 'restarted', 'success')
             host.reboot()
@@ -29,7 +29,10 @@ class HostActionView(LoginRequiredMixin, View):
             host.halt()
         elif action == 'kill' or action == 'forceoff':
             host.kill()
-        return redirect('hosts')
+        if request.is_ajax():
+            return HttpResponse(200)
+        else:
+            return redirect('hosts')
 
 class HostDetailView(DetailView):
     model = Host

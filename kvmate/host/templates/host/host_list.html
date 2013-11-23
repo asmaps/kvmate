@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% block 'head' %}
 <title>kvmate - your hosts</title>
+<script type="text/javascript">
+$(document).ready(function(){});
+</script>
 {% endblock %}
 {% block 'ahosts' %}
 class="active"
@@ -25,17 +28,14 @@ class="active"
             </thead>
             <tbody>
             {% for host in object_list %}
-                <tr class="{% if host.is_on %}success{% else %}danger{% endif %}">
+                <tr id='{{ host.name }}' class="{% if host.is_on %}success{% else %}danger{% endif %}">
                     <td>{{ host.name }}</td>
                     <td><a class='btn btn-xs btn-primary' href='{% url 'info' host.name %}'>Info</a></td>
                     <td>
-                        {% if host.is_on %}
-                        <a class='btn btn-xs btn-danger' href='{% url 'action' host.name "shutdown"%}'>Shutdown</a>
-                        <a class='btn btn-xs btn-danger' href='{% url 'action' host.name "reboot"%}'>Reboot</a>
-                        <a class='btn btn-xs btn-danger' href='{% url 'action' host.name "kill"%}'>Forceoff</a>
-                        {% else %}
-                        <a class='btn btn-xs btn-success' href='{% url 'action' host.name "start"%}'>Start</a>
-                        {% endif %}
+                        <a class='while-on btn btn-xs btn-danger' href="#" onclick="$.ajax({url:'{% url 'action' host.name 'shutdown'%}'});return false;">Shutdown</a>
+                        <a class='while-on btn btn-xs btn-danger' href="#" onclick="$.ajax({url:'{% url 'action' host.name 'reboot'%}'});return false;">Reboot</a>
+                        <a class='while-on btn btn-xs btn-danger' href="#" onclick="$.ajax({url:'{% url 'action' host.name 'kill'%}'});return false;">Forceoff</a>
+                        <a class='while-off btn btn-xs btn-success' href="#" onclick="$.ajax({url:'{% url 'action' host.name 'start'%}'});return false;">Start</a>
                     </td>
                 </tr>
             {% endfor %}
