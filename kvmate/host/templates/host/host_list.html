@@ -3,6 +3,17 @@
 <title>kvmate - your hosts</title>
 <script type="text/javascript">
 $(document).ready(function(){});
+function showMessage(data) {
+    var messages = $('#messages-content');
+    if (messages.length && data.msg) {
+        messages.html(data.msg);
+    }
+}
+function toggleHost(host) {
+    $('#' + host + '-row').removeClass("danger success");
+    $('#' + host + '-row').addClass("warning");
+    $('.' + host + '-power-button').addClass('disabled')
+}
 </script>
 {% endblock %}
 {% block 'ahosts' %}
@@ -28,14 +39,25 @@ class="active"
             </thead>
             <tbody>
             {% for host in object_list %}
-                <tr id='{{ host.name }}' class="{% if host.is_on %}success{% else %}danger{% endif %}">
+                <tr id='{{ host.name }}-row' class="{% if host.is_on %}success{% else %}danger{% endif %}">
                     <td>{{ host.name }}</td>
                     <td><a class='btn btn-xs btn-primary' href='{% url 'info' host.name %}'>Info</a></td>
-                    <td>
-                        <a class='while-on btn btn-xs btn-danger' href="#" onclick="$.ajax({url:'{% url 'action' host.name 'shutdown'%}'});return false;">Shutdown</a>
-                        <a class='while-on btn btn-xs btn-danger' href="#" onclick="$.ajax({url:'{% url 'action' host.name 'reboot'%}'});return false;">Reboot</a>
-                        <a class='while-on btn btn-xs btn-danger' href="#" onclick="$.ajax({url:'{% url 'action' host.name 'kill'%}'});return false;">Forceoff</a>
-                        <a class='while-off btn btn-xs btn-success' href="#" onclick="$.ajax({url:'{% url 'action' host.name 'start'%}'});return false;">Start</a>
+                    <td id='{{ host.name }}-power'>
+                        {% if host.is_on %}
+                        <a class='btn btn-xs btn-danger {{ host.name }}-power-button'
+                            href="#"
+                            onclick="$.get('{% url 'action' host.name 'shutdown'%}', function(data){showMessage(data);toggleHost('{{ host.name }}')});return false;">Shutdown</a>
+                        <a class='btn btn-xs btn-danger {{ host.name }}-power-button'
+                            href="#"
+                            onclick="$.get('{% url 'action' host.name 'reboot'%}', function(data){showMessage(data);toggleHost('{{ host.name }}')});return false;">Reboot</a>
+                        <a class='btn btn-xs btn-danger {{ host.name }}-power-button'
+                            href="#"
+                            onclick="$.get('{% url 'action' host.name 'forceoff'%}', function(data){showMessage(data);toggleHost('{{ host.name }}')});return false;">Forceoff</a>
+                        {% else %}
+                        <a class='btn btn-xs btn-success {{ host.name }}-power-button'
+                            href="#"
+                            onclick="$.get('{% url 'action' host.name 'start'%}', function(data){showMessage(data);toggleHost('{{ host.name }}')});return false;">Start</a>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}

@@ -1,11 +1,18 @@
+# django message framework
 from django.contrib import messages
+# rendering of those messages using ajax and jquery
+import json
 from django.shortcuts import redirect
+from django.template import RequestContext
+from django.template.loader import render_to_string
 from django.http import HttpResponse
+# views and mixins
 from django.views.generic import View, ListView, DetailView, CreateView
 from django.views.generic.edit import ModelFormMixin
+from braces.views import LoginRequiredMixin
+# imports from within this app
 from .models import Host
 from .forms import HostForm
-from braces.views import LoginRequiredMixin
 
 class HostListView(ListView):
     model = Host
@@ -22,15 +29,22 @@ class HostActionView(LoginRequiredMixin, View):
         host = Host.objects.get(name=name)
         if action == 'start' or action == 'poweron':
             host.start()
+            messages.add_message(request, messages.ERROR, 'Started the virtual machine "%s"' % name , 'success')
         elif action == 'reboot' or action == 'restart':
-            messages.add_message(request, messages.ERROR, 'restarted', 'success')
             host.reboot()
+            messages.add_message(request, messages.ERROR, 'Rebooted the virtual machine "%s"' % name , 'success')
         elif action == 'halt' or action == 'shutdown' or action == 'poweroff':
             host.halt()
+            messages.add_message(request, messages.ERROR, 'Shutdown the virtual machine "%s"' % name , 'success')
         elif action == 'kill' or action == 'forceoff':
             host.kill()
+            messages.add_message(request, messages.ERROR, 'Forced the virtual machine "%s" off' % name , 'success')
         if request.is_ajax():
-            return HttpResponse(200)
+            data = { 'msg': render_to_string('messages.html', {}, RequestContext(request)), }
+            return HttpResponse(
+                json.dumps(data, ensure_ascii=False),
+                content_type=request.is_ajax() and "application/json" or "text/html"
+            )
         else:
             return redirect('hosts')
 

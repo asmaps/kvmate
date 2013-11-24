@@ -33,14 +33,9 @@
                 {% endif %}
             </ul>
         </nav>
-        {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-dismissable alert-{{ message.tags }}">
-            {{ message }}
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <div id="messages-content" class="col-md-10 col-md-offset-1">
+            {% include 'messages.html' %}
         </div>
-        {% endfor %}
-        {% endif %}
         {% block 'content' %}{% endblock %}
     </body>
 </html>
