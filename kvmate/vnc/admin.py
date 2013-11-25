@@ -1,4 +1,4 @@
 from django.contrib import admin
-from .models import VNC
+from .models import Vnc
 
-admin.site.register(VNC)
+admin.site.register(Vnc)

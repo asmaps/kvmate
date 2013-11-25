@@ -3,6 +3,8 @@ import libvirt
 from xml.dom.minidom import parseString
 from celery.task import control as taskcontrol
 from django.core.exceptions import ObjectDoesNotExist
+from vnc.models import Vnc
+from .tasks import start_websock
 
 class LibvirtBackend():
 
@@ -30,7 +32,7 @@ class LibvirtBackend():
             host.vnc.delete()
             host.save()
         except ObjectDoesNotExist as e:
-            self.logger.debug('tried terminating a nonexistant vnc process')
+            self.logger.info('tried terminating a nonexistant vnc process')
 
     def set_name(self, host, old_name):
         #TODO make critical error less critical
@@ -153,7 +155,7 @@ class LibvirtBackend():
                 self.logger.error('reboot failed for %s with:' % host.name)
                 self.logger.error(e.get_error_message())
                 return -1
-            #self._terminate_vnc(host)
+            self._terminate_vnc(host)
         self.logger.info('reboot run for %s' % host.name)
         return 0 # all is fine
 
@@ -192,11 +194,11 @@ class LibvirtBackend():
                 self.logger.error('destroy failed for %s with:' % host.name)
                 self.logger.error(e.get_error_message())
                 return -1
-            #self._terminate_vnc(host)
+            self._terminate_vnc(host)
         self.logger.info('destroy run for %s' % host.name)
         return 0 # all is fine
 
-    def create_websock(self, host):
+    def attach_or_create_websock(self, user, host):
         '''
         Creates a websocket for the specified host
         :returns: 1 if the host is not running, 0 and the port if the websocket is running, -1 if
@@ -207,21 +209,23 @@ class LibvirtBackend():
             self.logger.warning('vnc requested for the shutdown host %s' % host.name)
             return 1
         else:
-            doc = parseString(domain.XMLDesc(0))
-            domain_node = doc.getElementsByTagName('domain')[0]
-            graphics_node = domain_node.getElementsByTagName('graphics')[0]
-            if graphics_node is None or graphics_node.getAttribute('type') != u'vnc':
-                # vm does not support vnc
-                return -1
-            port = int(graphics_node.getAttribute('port'))
-            server = WebSocketProxy(
-                    target_host='localhost',
-                    target_port=str(port),
-                    listen_host='localhost',
-                    listen_port=str(10000 + port),
-                    run_once=True,
-                    daemon=True
-                    )
-            server.start_server()
-        self.logger.info('websocket started for %s on port %d' % (host.name, 10000 + port))
-        return 0, str(10000 + port) # all is fine
+            try:
+                self.logger.info('try adding %s to the vnc session of %s' % (user, host.name))
+                host.vnc.users.add(user)
+            except Vnc.DoesNotExist:
+                self.logger.info('initializing vnc for %s' % host.name)
+                doc = parseString(domain.XMLDesc(0))
+                domain_node = doc.getElementsByTagName('domain')[0]
+                graphics_node = domain_node.getElementsByTagName('graphics')[0]
+                if graphics_node is None or graphics_node.getAttribute('type') != u'vnc':
+                    # vm does not support vnc
+                    return -1
+                target_port = graphics_node.getAttribute('port')
+                port = int(graphics_node.getAttribute('port'))+10000
+                t = start_websock.delay(str(target_port), str(port))
+                vnc = Vnc(host=host,port=port,pid=t.id)
+                vnc.save()
+                vnc.users.add(user)
+                vnc.save()
+                self.logger.info('websocket started for %s on port %d' % (host.name, host.vnc.port))
+        return 0 # all is fine
