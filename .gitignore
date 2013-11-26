@@ -1,4 +1,8 @@
 *.py[cod]
+*.swp
+celery
+*.log
+*rdb
 
 # C extensions
 *.so
