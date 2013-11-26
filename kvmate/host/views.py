@@ -43,7 +43,7 @@ class HostActionView(LoginRequiredMixin, View):
             data = { 'msg': render_to_string('messages.html', {}, RequestContext(request)), }
             return HttpResponse(
                 json.dumps(data, ensure_ascii=False),
-                content_type=request.is_ajax() and "application/json" or "text/html"
+                content_type="application/json" or "text/html"
             )
         else:
             return redirect('hosts')
