@@ -45,15 +45,15 @@ class="active"
                     <tr id='{{ host.name }}-row' class="{% if host.is_on %}success{% else %}danger{% endif %}">
                         <td>{{ host.name }}</td>
                         <td>
-                            <a class='btn btn-xs btn-primary' href='{% url 'info' host.name %}'>Overview</a>
+                            <a class='btn btn-xs btn-primary' href='{% url 'info' host.name %}'><span class="glyphicon glyphicon-info-sign"></span> Overview</a>
                             <a class='btn btn-xs btn-primary{% if not user.is_authenticated %} disabled{% endif %}'
-                                href='{% url 'vnc' host.name %}'>VNC</a>
+                                href='{% url 'vnc' host.name %}'><span class="glyphicon glyphicon-picture"></span> VNC</a>
                         </td>
                         <td id='{{ host.name }}-power'>
                             {% if host.is_on %}
                             <a id="popover-{{ host.name }}-shutdown"
                                 class="btn btn-xs btn-danger {{ host.name }}-power-button{% if not user.is_authenticated %} disabled{% endif %}"
-                                href="#">Shutdown</a>
+                                href="#"><span class="glyphicon glyphicon-off"></span> Shutdown</a>
                             <div id="{{ host.name }}-shutdown-head" class="hide">
                                 <strong>Shutdown the host "{{ host.name }}"</strong>
                             </div>
@@ -79,7 +79,7 @@ class="active"
                             </script>
                             <a id="popover-{{ host.name }}-reboot"
                                 class="btn btn-xs btn-danger {{ host.name }}-power-button{% if not user.is_authenticated %} disabled{% endif %}"
-                                href="#">Reboot</a>
+                                href="#"><span class="glyphicon glyphicon-resize-vertical"></span> Reboot</a>
                             <div id="{{ host.name }}-reboot-head" class="hide">
                                 <strong>Reboot the host "{{ host.name }}"</strong>
                             </div>
@@ -105,7 +105,7 @@ class="active"
                             </script>
                             <a id="popover-{{ host.name }}-forceoff"
                                 class="btn btn-xs btn-danger {{ host.name }}-power-button{% if not user.is_authenticated %} disabled{% endif %}"
-                                href="#">Forceoff</a>
+                                href="#"><span class="glyphicon glyphicon-fire"></span> Forceoff</a>
                             <div id="{{ host.name }}-forceoff-head" class="hide">
                                 <strong>Force the host "{{ host.name }}" off</strong>
                             </div>
