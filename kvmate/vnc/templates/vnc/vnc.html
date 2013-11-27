@@ -23,6 +23,14 @@
                 </div>
                 <div id="noVNC_control" style="text-align:center;">
                     <a class="btn btn-danger hastooltip"
+                        title="Kills the websocket and clears information about it from the database. This affects all users."
+                        data-toggle="tooltip"
+                        data-placement='left'
+                        trigger='hover'
+                        href="{% url 'vnc-restart' name %}">
+                        <span class="glyphicon glyphicon-minus-sign"></span> End VNC connection
+                    </a>
+                    <a class="btn btn-danger hastooltip"
                         title="careful with that!"
                         data-toggle="tooltip"
                         data-placement='right'

@@ -1,7 +1,6 @@
 import logging
 import libvirt
 from xml.dom.minidom import parseString
-from celery.task import control as taskcontrol
 from django.core.exceptions import ObjectDoesNotExist
 from vnc.models import Vnc
 from .tasks import start_websock
@@ -23,16 +22,15 @@ class LibvirtBackend():
             print 'libvirt failed for host ' + name + ' with:'
             print str(e.get_error_code()) + ': ' + e.get_error_message()
 
-    def _terminate_vnc(self, host):
+    def terminate_vnc(self, host):
         '''
         Terminates the VNC Websocket process attached to a Host object
         '''
         try:
-            taskcontrol.revoke(host.vnc.id, terminate=True)
             host.vnc.delete()
             host.save()
         except ObjectDoesNotExist as e:
-            self.logger.info('tried terminating a nonexistant vnc process')
+            self.logger.info('tried deleting a nonexistant vnc database entry')
 
     def set_name(self, host, old_name):
         #TODO make critical error less critical
@@ -155,7 +153,7 @@ class LibvirtBackend():
                 self.logger.error('reboot failed for %s with:' % host.name)
                 self.logger.error(e.get_error_message())
                 return -1
-            self._terminate_vnc(host)
+            self.terminate_vnc(host)
         self.logger.info('reboot run for %s' % host.name)
         return 0 # all is fine
 
@@ -194,7 +192,7 @@ class LibvirtBackend():
                 self.logger.error('destroy failed for %s with:' % host.name)
                 self.logger.error(e.get_error_message())
                 return -1
-            self._terminate_vnc(host)
+            self.terminate_vnc(host)
         self.logger.info('destroy run for %s' % host.name)
         return 0 # all is fine
 
@@ -205,7 +203,10 @@ class LibvirtBackend():
         there is no VNC support for this domain
         '''
         domain = self._get_domain(host.name)
-        if not domain.isActive():
+        if domain is None:
+            self.logger.warning('vnc requested for the host %s, which does not exist in libvirt (yet)' % host.name)
+            return 2
+        elif not domain.isActive():
             self.logger.warning('vnc requested for the shutdown host %s' % host.name)
             return 1
         else:

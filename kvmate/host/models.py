@@ -24,19 +24,22 @@ class Host(models.Model):
 
     def start(self):
         self.is_on = True
-        self.save(update_fields=['is_on'])
+        self.save()
+        return self.lvb.start(self)
 
     def halt(self):
         self.is_on = False
-        self.save(update_fields=['is_on'])
+        self.save()
+        return self.lvb.shutdown(self)
 
     def reboot(self):
         self.lvb.reboot(self)
+        return self.lvb.reboot(self)
 
     def kill(self):
         self.is_on = False
         self.save()
-        self.lvb.destroy(self)
+        return self.lvb.destroy(self)
 
     def __unicode__(self):
         return 'KVMate.Host %s [On: %d]' % (self.name, self.is_on)

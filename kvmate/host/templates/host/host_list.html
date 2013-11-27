@@ -41,7 +41,7 @@ class="active"
                     </tr>
                 </thead>
                 <tbody>
-                {% for host in object_list %}
+                {% for host in object_list|dictsort:"name"|dictsortreversed:"is_on" %}
                     <tr id='{{ host.name }}-row' class="{% if host.is_on %}success{% else %}danger{% endif %}">
                         <td>{{ host.name }}</td>
                         <td>

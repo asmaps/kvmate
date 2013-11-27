@@ -13,6 +13,7 @@ from braces.views import LoginRequiredMixin
 # imports from within this app
 from .models import Host
 from .forms import HostForm
+from .tasks import virtinstall
 
 class HostListView(ListView):
     model = Host
@@ -28,17 +29,37 @@ class HostActionView(LoginRequiredMixin, View):
     def get(self, request, name, action):
         host = Host.objects.get(name=name)
         if action == 'start' or action == 'poweron':
-            host.start()
-            messages.add_message(request, messages.ERROR, 'Started the virtual machine "%s"' % name , 'success')
+            success = host.start()
+            if success == 0:
+                messages.add_message(request, messages.ERROR, 'Started the virtual machine "%s"' % name , 'success')
+            elif success == 1:
+                messages.add_message(request, messages.ERROR, 'The virtual machine "%s" is already running' % name , 'warning')
+            elif success == -1:
+                messages.add_message(request, messages.ERROR, 'Some error occured while starting the virtual machine "%s"' % name , 'danger')
         elif action == 'reboot' or action == 'restart':
-            host.reboot()
-            messages.add_message(request, messages.ERROR, 'Rebooted the virtual machine "%s"' % name , 'success')
+            success = host.reboot()
+            if success == 0:
+                messages.add_message(request, messages.ERROR, 'Rebooted the virtual machine "%s"' % name , 'success')
+            elif success == 1:
+                messages.add_message(request, messages.ERROR, 'The virtual machine "%s" is not running' % name , 'warning')
+            elif success == -1:
+                messages.add_message(request, messages.ERROR, 'Some error occured while rebooting the virtual machine "%s"' % name , 'danger')
         elif action == 'halt' or action == 'shutdown' or action == 'poweroff':
-            host.halt()
-            messages.add_message(request, messages.ERROR, 'Shutdown the virtual machine "%s"' % name , 'success')
+            success = host.halt()
+            if success == 0:
+                messages.add_message(request, messages.ERROR, 'Shutdown the virtual machine "%s"' % name , 'success')
+            elif success == 1:
+                messages.add_message(request, messages.ERROR, 'The virtual machine "%s" is already shutdown' % name , 'warning')
+            elif success == -1:
+                messages.add_message(request, messages.ERROR, 'Some error occured while shutting down the virtual machine "%s"' % name , 'danger')
         elif action == 'kill' or action == 'forceoff':
-            host.kill()
-            messages.add_message(request, messages.ERROR, 'Forced the virtual machine "%s" off' % name , 'success')
+            success = host.kill()
+            if success == 0:
+                messages.add_message(request, messages.ERROR, 'Forced the virtual machine "%s" off' % name , 'success')
+            elif success == 1:
+                messages.add_message(request, messages.ERROR, 'The virtual machine "%s" is already off' % namewarning, 'warning')
+            elif success == -1:
+                messages.add_message(request, messages.ERROR, 'Some error occured while forcing the virtual machine "%s" off' % namedanger, 'danger')
         if request.is_ajax():
             data = { 'msg': render_to_string('messages.html', {}, RequestContext(request)), }
             return HttpResponse(
@@ -63,8 +84,10 @@ class HostCreateView(LoginRequiredMixin, CreateView):
     form_class = HostForm
     template_name_suffix = '_create_form'
     success_url = '/'
-    initial = {'autostart': True, 'persistent': True, 'vcpus' : 1, 'memory' : 524288 }
+    initial = {'autostart': True, 'persistent': True, 'vcpus' : 1, 'memory' : 512 }
 
     def form_valid(self, form):
         self.object = form.save()
+        self.object.memory = self.object.memory * 1024
+        t = virtinstall.delay(form.data.copy())
         return super(ModelFormMixin, self).form_valid(form)
