@@ -22,7 +22,11 @@ class VncView(LoginRequiredMixin, TemplateView):
         except Host.DoesNotExist:
             messages.add_message(self.request, messages.ERROR, 'The host "%s" is not in the database' % name, 'danger')
             return redirect('hosts')
-        return super(VncView, self).get(request, name)
+        if host.is_on:
+            return super(VncView, self).get(request, name)
+        else:
+            messages.add_message(self.request, messages.ERROR, 'This host is not running at the moment', 'warning')
+            return redirect('hosts')
 
     def get_context_data(self, **kwargs):
         context = super(VncView, self).get_context_data(**kwargs)

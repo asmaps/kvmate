@@ -46,7 +46,7 @@ class="active"
                         <td>{{ host.name }}</td>
                         <td>
                             <a class='btn btn-xs btn-primary' href='{% url 'info' host.name %}'><span class="glyphicon glyphicon-info-sign"></span> Overview</a>
-                            <a class='btn btn-xs btn-primary{% if not user.is_authenticated %} disabled{% endif %}'
+                            <a class='btn btn-xs btn-primary{% if not user.is_authenticated or not host.is_on%} disabled{% endif %}'
                                 href='{% url 'vnc' host.name %}'><span class="glyphicon glyphicon-picture"></span> VNC</a>
                         </td>
                         <td id='{{ host.name }}-power'>
