@@ -6,6 +6,7 @@ import json
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.http import HttpResponse
+from django.conf import settings
 # django message framework
 from django.contrib import messages
 
@@ -33,18 +34,17 @@ class VncView(LoginRequiredMixin, TemplateView):
         lvb = LibvirtBackend()
         host = Host.objects.get(name=self.kwargs['name'])
         success = lvb.attach_or_create_websock(self.request.user, host)
+        context['name']=host.name
         if success == 0:
-            # TODO get from settings
-            context['name']=host.name
-            context['host']='10.4.114.97'
+            context['host']=settings.VNC_HOST
             context['port']=host.vnc.port
-            return context
         elif success == 1:
             messages.add_message(self.request, messages.ERROR, 'This host is not running at the moment', 'warning')
         elif success == -1:
             messages.add_message(self.request, messages.ERROR, 'An error occured retrieving the VNC parameters', 'danger')
         elif success == 2:
             messages.add_message(self.request, messages.ERROR, 'The host "%s" does not (yet) exist, but is in the database. This could mean that the host has been deleted without using kvmate, or that the host has not yet been created. If the latter is the case, allow a few seconds to start the boot process and reload this page' % self.kwargs['name'], 'danger')
+        return context
 
 class VncRestartView(LoginRequiredMixin, View):
     def get(self, request, name):

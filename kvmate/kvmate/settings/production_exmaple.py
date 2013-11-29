@@ -1,14 +1,7 @@
 from .base import *
 
-DEBUG = True
-TEMPLATE_DEBUG = True
-
-STATIC_ROOT = '/home/danieln/staticfiles'
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'b2&@-tf$*z&#tnq^%b6+(5wsr-^-xw4tdgk(g4z1p6+zbj@62p'
-
-INSTALLED_APPS += ( 'django_extensions', )
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
@@ -17,7 +10,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'kvmate',
         'USER': 'kvmate',
-        'PASSWORD': 'whatever',
+        'PASSWORD': 'somthing_secure',
         'HOST': '127.0.0.1'
     }
 }
@@ -40,7 +33,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'kvmate.log',
+            'filename': '/var/log/kvmate/kvmate.log',
             'formatter': 'verbose'
         },
     },

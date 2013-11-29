@@ -18,21 +18,20 @@ def virtinstall(data):
     def render_to_file(template, filename, data):
         open(filename, "w").write(render_to_string(template, data))
     logger = logging.getLogger(__name__)
-    # TODO: get the following from settings
     # virtinstall settings
-    data['netinstall'] = "http://mirror.selfnet.de/debian/dists/wheezy/main/installer-amd64/"
-    data['bridge'] = "br0"
-    data['poolname'] = "virtimages"
-    data['disksize'] = "5"
+    data['netinstall'] = settings.NETINSTALL_URL
+    data['bridge'] = settings.BRIDGE_NAME
+    data['poolname'] = settings.STORAGEPOOL_NAME
+    data['disksize'] = settings.DISKSIZE
     if data['autostart']:
         data['autostartflag'] = "--autostart "
-    data['preseedpath'] = "/home/danieln/kvmate/kvmate/host/static/host/preseed-" + data['name'] + ".cfg"
-    data['preseedurl'] = "172.16.0.10:8000/static/host/preseed-" + data['name'] + ".cfg"
+    data['preseedpath'] = settings.PRESEEDPATH + "preseed-" + data['name'] + ".cfg"
+    data['preseedurl'] = settings.PRESEED_HOST + ":" + settings.PRESEED_PORT + settings.STATIC_URL + "host/preseed-" + data['name'] + ".cfg"
     # preseed settings
-    data['mirror'] = "mirror.selfnet.de"
-    data['timezone'] = "Europe/Berlin"
-    data['ntpserver'] = "ntp.selfnet.de"
-    data['initial_password'] = "geheim42"
+    data['mirror'] = settings.DEFAULT_MIRROR
+    data['timezone'] = settings.DEFAULT_TIMEZONE
+    data['ntpserver'] = settings.DEFAULT_NTPSERVER
+    data['initial_password'] = settings.INITIAL_PASSWORD
     # make preseedfile
     render_to_file("host/preseed.cfg", data['preseedpath'], data)
     # make and run virtinstall command
