@@ -1,13 +1,10 @@
 # django with extensions
-django
+django==1.6
 django-braces
 django-bootstrap-form
 # celery
 django-celery
 celery[redis]
 numpy
-# utility
-xmltodict
-salt
 # for postgres
 psycopg2
