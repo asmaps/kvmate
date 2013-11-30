@@ -49,7 +49,7 @@ class LibvirtBackend():
             return -1
         else:
             try:
-                xml = xmltodict.parse(domain.XMLDesc(0))
+                #xml = xmltodict.parse(domain.XMLDesc(0))
                 old_domain.undefine()
                 xml.replace('<name>' + old_name + '</name>', '<name>' + host.name + '</name>')
                 libvirt.defineXML(xml)

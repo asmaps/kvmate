@@ -2,6 +2,26 @@
 {% load bootstrap %}
 {% block 'head' %}
 <title>kvmate - create a new host</title>
+<script type="text/javascript">
+    $(document).ready(function(){
+        if ($("#id_iptype").val() == 'dynamic') {
+            toggleFields()
+        }
+        $("#id_iptype").change(function() { toggleFields() })
+    })
+    function toggleFields() {
+        $('#id_ip').parent().toggle();
+        $('.control-label[for=id_ip]').toggle();
+        $('#id_netmask').parent().toggle();
+        $('.control-label[for=id_netmask]').toggle();
+        $('#id_gateway').parent().toggle();
+        $('.control-label[for=id_gateway]').toggle();
+        $('#id_dns').parent().toggle();
+        $('.control-label[for=id_dns]').toggle();
+        $('#id_domain').parent().toggle();
+        $('.control-label[for=id_domain]').toggle();
+    }
+</script>
 {% endblock %}
 {% block 'acreate' %}
 class="active"

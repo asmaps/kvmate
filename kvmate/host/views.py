@@ -84,10 +84,11 @@ class HostCreateView(LoginRequiredMixin, CreateView):
     form_class = HostForm
     template_name_suffix = '_create_form'
     success_url = '/'
+    # TODO: get those form settings
     initial = {'autostart': True, 'persistent': True, 'vcpus' : 1, 'memory' : 512 }
 
     def form_valid(self, form):
+        t = virtinstall.delay(form.data.copy())
         self.object = form.save()
         self.object.memory = self.object.memory * 1024
-        t = virtinstall.delay(form.data.copy())
         return super(ModelFormMixin, self).form_valid(form)

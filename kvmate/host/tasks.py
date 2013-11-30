@@ -25,9 +25,17 @@ def virtinstall(data):
     data['disksize'] = settings.DISKSIZE
     if data['autostart']:
         data['autostartflag'] = "--autostart "
+    if data['iptype'] == 'static':
+        data['virtinstnetwork'] = 'netcfg/get_ipaddress=' + data['ip'] + ' netcfg/get_netmask=' + data['netmask'] + ' netcfg/get_gateway=' + data['gateway'] + ' netcfg/get_nameservers=' + data['dns'] + ' netcfg/disable_dhcp=true'
+    elif data['iptype'] == 'dynamic':
+        data['virtinstnetwork'] = 'netcfg/disable_dhcp=false'
     data['preseedpath'] = settings.PRESEEDPATH + "preseed-" + data['name'] + ".cfg"
     data['preseedurl'] = settings.PRESEED_HOST + ":" + settings.PRESEED_PORT + settings.STATIC_URL + "host/preseed-" + data['name'] + ".cfg"
     # preseed settings
+    if data['iptype'] == 'static':
+        data['preseednetwork'] = 'd-i netcfg/get_nameservers string ' + data['dns'] + '\nd-i netcfg/get_ipaddress string ' + data['ip'] + '\nd-i netcfg/get_netmask string ' + data['netmask'] + '\nd-i netcfg/get_gateway string ' + data['gateway'] + '\nd-i netcfg/confirm_static boolean true'
+    elif data['iptype'] == 'dynamic':
+        data['preseednetwork'] = 'd-i netcfg/disable_dhcp boolean false'
     data['mirror'] = settings.DEFAULT_MIRROR
     data['timezone'] = settings.DEFAULT_TIMEZONE
     data['ntpserver'] = settings.DEFAULT_NTPSERVER
