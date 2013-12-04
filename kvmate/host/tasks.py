@@ -65,8 +65,8 @@ def update_hosts():
         domainlist.append(conn.lookupByName(name))
     # mirror or confirm them in our database
     for domain in domainlist:
-        try:
-            host = Host.objects.get(name=domain.name())
+        host = Host.objects.get(name=domain.name())
+        if host != None:
             logger.info('host %s found, checking for changes...' % host.name)
             new_data = {}
             new_data['is_on'] = True if domain.isActive() else False
@@ -96,7 +96,7 @@ def update_hosts():
                 host.persistent = new_data['persistent']
             host.save()
             dead_hosts.remove(host.name)
-        except Host.DoesNotExist:
+        else:
             logger.info('new host %s found, adding to database' % domain.name())
             host = Host.objects.create(
                 name=domain.name(),
