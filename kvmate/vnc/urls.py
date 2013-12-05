@@ -5,12 +5,12 @@ from .views import VncView, VncRestartView
 
 urlpatterns = patterns("",
         url(
-            regex=r'^(?P<name>\w+)/$',
+            regex=r'^(?P<name>[a-zA-Z0-9_\-]+)/$',
             view=VncView.as_view(),
             name="vnc"
             ),
         url(
-            regex=r'^(?P<name>\w+)/restart/$',
+            regex=r'^(?P<name>[a-zA-Z0-9_\-]+)/restart/$',
             view=VncRestartView.as_view(),
             name="vnc-restart"
             ),

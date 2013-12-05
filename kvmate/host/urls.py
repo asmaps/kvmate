@@ -14,12 +14,12 @@ urlpatterns = patterns("",
             name="create"
             ),
         url(
-            regex=r'^(?P<name>\w+)/$',
+            regex=r'^(?P<name>[a-zA-Z0-9_\-]+)/$',
             view=HostDetailView.as_view(),
             name="info"
             ),
         url(
-            regex=r'^(?P<name>\w+)/(?P<action>\w+)/$',
+            regex=r'^(?P<name>[a-zA-Z0-9_\-]+)/(?P<action>\w+)/$',
             view=HostActionView.as_view(),
             name="action"
             ),
