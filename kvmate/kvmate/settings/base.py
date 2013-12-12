@@ -13,6 +13,14 @@ djcelery.setup_loader()
 BROKER_URL = 'redis://localhost:6379/0'
 CELERYD_CONCURRENCY=10
 
+from celery.schedules import crontab
+CELERYBEAT_SCHEDULE = {
+    'run-hostupdate-every-10min': {
+        'task': 'host.tasks.update_hosts',
+        'schedule': crontab(hour="*", minute="*/10", day_of_week="*"),
+    },
+}
+
 LOGIN_URL='/login'
 LOGIN_REDIRECT_URL='/'
 LOGOUT_URL='/logout'

@@ -1,7 +1,7 @@
-from celery import task
+from celery import shared_task
 from .websockify import WebSocketProxy
 
-@task
+@shared_task
 def start_websock(target_port, listen_port):
     server = WebSocketProxy(
             target_host='localhost',

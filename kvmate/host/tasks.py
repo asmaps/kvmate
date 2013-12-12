@@ -1,7 +1,7 @@
 import libvirt
 import logging
 
-from celery import task
+from celery import shared_task
 import shlex
 from subprocess import call
 from django.template.loader import render_to_string
@@ -13,7 +13,7 @@ from django.conf import settings
 
 from .models import Host
 
-@task
+@shared_task
 def virtinstall(data):
     def render_to_file(template, filename, data):
         open(filename, "w").write(render_to_string(template, data))
@@ -47,7 +47,7 @@ def virtinstall(data):
     logger.info('running virtinstall with: ' + command)
     call(shlex.split(command))
 
-@periodic_task(run_every=crontab(hour="*", minute="*/10", day_of_week="*"))
+@shared_task
 def update_hosts():
     '''
     Update the database
