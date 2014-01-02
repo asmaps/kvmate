@@ -18,6 +18,7 @@ def virtinstall(data):
     def render_to_file(template, filename, data):
         open(filename, "w").write(render_to_string(template, data))
     logger = logging.getLogger(__name__)
+    logger.info('creating new host')
     # virtinstall settings
     data['netinstall'] = settings.NETINSTALL_URL
     data['bridge'] = settings.BRIDGE_NAME
@@ -112,3 +113,4 @@ def update_hosts():
         host = Host.objects.filter(name=name)[0]
         host.delete()
     conn.close()
+    logger.info('retrieved and updated all hosts from libvirt')
