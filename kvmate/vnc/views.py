@@ -44,13 +44,8 @@ class VncView(LoginRequiredMixin, TemplateView):
             messages.add_message(self.request, messages.ERROR, 'An error occured retrieving the VNC parameters', 'danger')
         elif success == 2:
             messages.add_message(self.request, messages.ERROR, 'The host "%s" does not (yet) exist, but is in the database. This could mean that the host has been deleted without using kvmate, or that the host has not yet been created. If the latter is the case, allow a few seconds to start the boot process and reload this page' % self.kwargs['name'], 'danger')
+        elif success == -2:
+            context['host']=settings.VNC_HOST
+            context['port']=host.vnc.port
+            messages.add_message(self.request, messages.ERROR, 'This session is being blocked by another user.', 'danger')
         return context
-
-class VncRestartView(LoginRequiredMixin, View):
-    def get(self, request, name):
-        try:
-            Host.objects.get(name=name).vnc.delete()
-            messages.add_message(self.request, messages.ERROR, 'The VNC session for the host "%s" has been reset for all users' % name, 'success')
-        except Vnc.DoesNotExist:
-            messages.add_message(self.request, messages.ERROR, 'VNC did not run for this host.', 'warning')
-        return redirect('hosts')

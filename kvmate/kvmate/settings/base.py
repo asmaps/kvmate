@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import djcelery
 djcelery.setup_loader()
 BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = "redis"
 CELERYD_CONCURRENCY=10
 
 from celery.schedules import crontab

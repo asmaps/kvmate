@@ -1,6 +1,7 @@
 import logging
 import libvirt
 from xml.dom.minidom import parseString
+from celery.result import AsyncResult
 from django.core.exceptions import ObjectDoesNotExist
 from vnc.models import Vnc
 from .tasks import start_websock
@@ -210,23 +211,25 @@ class LibvirtBackend():
             self.logger.warning('vnc requested for the shutdown host %s' % host.name)
             return 1
         else:
-            try:
-                self.logger.info('try adding %s to the vnc session of %s' % (user, host.name))
-                host.vnc.users.add(user)
-            except Vnc.DoesNotExist:
-                self.logger.info('initializing vnc for %s' % host.name)
-                doc = parseString(domain.XMLDesc(0))
-                domain_node = doc.getElementsByTagName('domain')[0]
-                graphics_node = domain_node.getElementsByTagName('graphics')[0]
-                if graphics_node is None or graphics_node.getAttribute('type') != u'vnc':
-                    # vm does not support vnc
-                    return -1
-                target_port = graphics_node.getAttribute('port')
-                port = int(graphics_node.getAttribute('port'))+10000
-                t = start_websock.delay(str(target_port), str(port))
-                vnc = Vnc(host=host,port=port,pid=t.id)
-                vnc.save()
-                vnc.users.add(user)
-                vnc.save()
-                self.logger.info('websocket started for %s on port %d' % (host.name, host.vnc.port))
-        return 0 # all is fine
+            if hasattr(host, 'vnc'):
+                if not AsyncResult(host.vnc.pid).ready():
+                    self.logger.info('session of %s is blocked for %s by another user' % (host.name, user))
+                    return -2
+                else:
+                    host.vnc.delete()
+            self.logger.info('initializing vnc for %s' % host.name)
+            doc = parseString(domain.XMLDesc(0))
+            domain_node = doc.getElementsByTagName('domain')[0]
+            graphics_node = domain_node.getElementsByTagName('graphics')[0]
+            if graphics_node is None or graphics_node.getAttribute('type') != u'vnc':
+                # vm does not support vnc
+                return -1
+            target_port = graphics_node.getAttribute('port')
+            port = int(graphics_node.getAttribute('port'))+10000
+            t = start_websock.delay(str(target_port), str(port))
+            vnc = Vnc(host=host,port=port, pid=t.id)
+            vnc.save()
+            self.logger.info('websocket started for %s on port %d' % (host.name, host.vnc.port))
+            host.vnc = vnc
+            host.save()
+            return 0 # all is fine

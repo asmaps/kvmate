@@ -8,5 +8,8 @@ def start_websock(target_port, listen_port):
             target_port=target_port,
             listen_host='*',
             listen_port=listen_port,
+            verbose=True,
+            daemon=False,
+            run_once=True,
             )
     server.start_server()

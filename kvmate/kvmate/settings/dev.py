@@ -3,10 +3,8 @@ from .base import *
 DEBUG = True
 TEMPLATE_DEBUG = True
 
-STATIC_ROOT = '/home/danieln/staticfiles'
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'b2&@-tf$*z&#tnq^%b6+(5wsr-^-xw4tdgk(g4z1p6+zbj@62p'
+SECRET_KEY = 'b2&@-tf$*z&#tnq^iuyj+(5wsr-^-xw4tdgk(g4z1p6+zbj@62p'
 
 INSTALLED_APPS += ( 'django_extensions', )
 
@@ -15,9 +13,9 @@ INSTALLED_APPS += ( 'django_extensions', )
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'kvmate',
-        'USER': 'kvmate',
-        'PASSWORD': 'whatever',
+        'NAME': 'kvmate_dev',
+        'USER': 'kvmate_dev',
+        'PASSWORD': 'kvmate_dev',
         'HOST': '127.0.0.1'
     }
 }
