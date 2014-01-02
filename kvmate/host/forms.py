@@ -31,7 +31,5 @@ class HostForm(forms.ModelForm):
                 self._errors['gateway'] = self.error_class(['The gateway must be specified if static is selected!'])
             if cleaned_data.get('dns') == '':
                 self._errors['dns'] = self.error_class(['The DNS Server must be specified if static is selected!'])
-            if cleaned_data.get('domain') == '':
-                self._errors['domain'] = self.error_class(['The domain must be specified if static is selected!'])
         self.instance.is_on = True
         return cleaned_data
