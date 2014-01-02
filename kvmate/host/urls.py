@@ -1,6 +1,6 @@
 from django.conf.urls import patterns
 from django.conf.urls import url
-from .views import HostListView, HostActionView, HostDetailView, HostCreateView
+from .views import HostListView, HostActionView, HostDetailView, HostEditView, HostCreateView
 
 urlpatterns = patterns("",
         url(
@@ -17,6 +17,11 @@ urlpatterns = patterns("",
             regex=r'^(?P<name>[a-zA-Z0-9_\-]+)/$',
             view=HostDetailView.as_view(),
             name="info"
+            ),
+        url(
+            regex=r'^edit/(?P<name>[a-zA-Z0-9_\-]+)/$',
+            view=HostEditView.as_view(),
+            name="edit"
             ),
         url(
             regex=r'^(?P<name>[a-zA-Z0-9_\-]+)/(?P<action>\w+)/$',

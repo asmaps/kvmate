@@ -8,8 +8,10 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 # views and mixins
 from django.views.generic import View, ListView, DetailView, CreateView
-from django.views.generic.edit import ModelFormMixin
+from django.views.generic.edit import UpdateView, ModelFormMixin
 from braces.views import LoginRequiredMixin
+# url stuff
+from django.core.urlresolvers import reverse_lazy
 # imports from within this app
 from .models import Host
 from .forms import HostForm
@@ -78,6 +80,22 @@ class HostDetailView(DetailView):
         context = super(HostDetailView, self).get_context_data(**kwargs)
         context['memory_in_mb'] = context['object'].memory/1024
         return context
+
+
+class HostEditView(UpdateView):
+    model = Host
+    slug_field = 'name'
+    slug_url_kwarg = 'name'
+    fields = ['name', 'is_on', 'vcpus', 'memory', 'autostart', 'persistent']
+    template_name_suffix = '_update_form'
+
+    def form_valid(self, form):
+        self.success_url = reverse_lazy('info', args=(form.cleaned_data.get('name'),))
+        for field in form.changed_data:
+            setattr(self.object, field, form.cleaned_data.get(field))
+        self.object.save(update_fields=form.changed_data)
+        return super(ModelFormMixin, self).form_valid(form)
+
 
 class HostCreateView(LoginRequiredMixin, CreateView):
     model = Host
