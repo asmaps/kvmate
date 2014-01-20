@@ -1,6 +1,8 @@
 ### Settings for the virtinstall command:
 # The name of the bridge on the hypervisor the new host should use
 BRIDGE_NAME = "br0"
+# The type of the bridge, set it to 'bridge' for linux and to 'network' for openvswitch
+BRIDGE_TYPE = "bridge"
 # The name of the libvirt volume-pool that should be used
 STORAGEPOOL_NAME = "virtimages"
 # The amount of memory a new host should reserve

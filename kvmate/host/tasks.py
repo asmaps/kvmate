@@ -21,7 +21,7 @@ def virtinstall(data):
     logger.info('creating new host')
     # virtinstall settings
     data['netinstall'] = settings.NETINSTALL_URL
-    data['bridge'] = settings.BRIDGE_NAME
+    data['bridge'] = settings.BRIDGE_TYPE + ':' + settings.BRIDGE_NAME
     data['poolname'] = settings.STORAGEPOOL_NAME
     data['disksize'] = settings.DISKSIZE
     if data['autostart']:
