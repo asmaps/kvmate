@@ -8,3 +8,4 @@ celery[redis]
 numpy
 # for postgres
 psycopg2
+libvirt-python
