@@ -38,3 +38,9 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# PyCharm
+.idea
+
+# Dev database
+sqlite3.db
