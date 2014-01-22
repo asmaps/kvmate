@@ -46,6 +46,9 @@ def virtinstall(data):
     # make and run virtinstall command
     command = render_to_string("host/virtinstall.sh", data)
     logger.info('running virtinstall with: ' + command)
+    #FIXME: make configurable via settings
+    import os
+    os.environ['HOME'] = '/home/kvmate/' # override ~ for ~/.virtinst
     call(shlex.split(command))
 
 @shared_task
