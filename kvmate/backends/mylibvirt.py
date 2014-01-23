@@ -6,11 +6,17 @@ from django.core.exceptions import ObjectDoesNotExist
 from vnc.models import Vnc
 from .tasks import start_websock
 
-class LibvirtBackend():
 
+class LibvirtBackend(object):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self.conn = libvirt.open('qemu:///system')
+
+    def __getattribute__(self, item):
+        # self.conn as singleton (makes initialisation without libvirt rights possible)
+        # this is usefull for development without libvirt rights)
+        if item == 'conn' and not hasattr(self, 'conn'):
+            self.conn = libvirt.open('qemu:///system')
+        return super(LibvirtBackend, self).__getattribute__(item)
 
     def _get_domain(self, name):
         '''
@@ -225,9 +231,9 @@ class LibvirtBackend():
                 # vm does not support vnc
                 return -1
             target_port = graphics_node.getAttribute('port')
-            port = int(graphics_node.getAttribute('port'))+10000
+            port = int(graphics_node.getAttribute('port')) + 10000
             t = start_websock.delay(str(target_port), str(port))
-            vnc = Vnc(host=host,port=port, pid=t.id)
+            vnc = Vnc(host=host, port=port, pid=t.id)
             vnc.save()
             self.logger.info('websocket started for %s on port %d' % (host.name, host.vnc.port))
             host.vnc = vnc

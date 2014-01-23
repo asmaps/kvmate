@@ -3,6 +3,7 @@
 celery
 *.log
 *rdb
+local_settings.py
 
 # C extensions
 *.so
