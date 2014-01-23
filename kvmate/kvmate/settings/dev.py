@@ -1,4 +1,4 @@
-from .base import *
+from .base import INSTALLED_APPS
 
 DEBUG = True
 TEMPLATE_DEBUG = True

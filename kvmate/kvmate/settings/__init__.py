@@ -1,6 +1,8 @@
 import os
 import logging
 
+from .base import *
+
 if os.environ.get('PROD'):
     logging.info('Using production settings')
     from .production import *
