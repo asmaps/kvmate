@@ -11,7 +11,9 @@ class HostForm(forms.ModelForm):
     gateway = forms.GenericIPAddressField(required=False, initial=settings.CREATE_HOST_DEFAULT_GATEWAY)
     dns = forms.GenericIPAddressField(label='DNS Server', required=False, initial=settings.CREATE_HOST_DEFAULT_DNS)
     domain = forms.CharField(label='Domain Name', required=False, initial=settings.CREATE_HOST_DEFAULT_DOMAIN)
-    setup_script_url = forms.URLField(help_text='URL to a shell script that will be executed after installation',
+    setup_script_url = forms.URLField(required=False,
+                                      help_text='URL to a shell script that will be executed after installation - \
+                                                leave empty to disable this feature',
                                       initial=settings.CREATE_HOST_DEFAULT_SETUP_SCRIPT)
 
     class Meta:
