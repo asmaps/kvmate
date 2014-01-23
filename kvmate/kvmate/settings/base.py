@@ -9,12 +9,14 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 # Celery settings
 import djcelery
+
 djcelery.setup_loader()
 BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = "redis"
-CELERYD_CONCURRENCY=10
+CELERYD_CONCURRENCY = 10
 
 from celery.schedules import crontab
+
 CELERYBEAT_SCHEDULE = {
     'run-hostupdate-every-10min': {
         'task': 'host.tasks.update_hosts',
@@ -22,12 +24,13 @@ CELERYBEAT_SCHEDULE = {
     },
 }
 
-LOGIN_URL='/login'
-LOGIN_REDIRECT_URL='/'
-LOGOUT_URL='/logout'
+LOGIN_URL = '/login'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_URL = '/logout'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Quick-start development settings - unsuitable for production
@@ -37,7 +40,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 DEBUG = False
 TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = [ '*' ]
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = (
@@ -83,3 +86,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 STATIC_URL = '/static/'
+
+# Create Host defaults
+CREATE_HOST_DEFAULT_IP = '192.168.0.'
+CREATE_HOST_DEFAULT_NETMASK = '255.255.255.0'
+CREATE_HOST_DEFAULT_GATEWAY = '192.168.0.1'
+CREATE_HOST_DEFAULT_DNS = '192.168.0.1'
+CREATE_HOST_DEFAULT_DOMAIN = 'vm.example.com'
+CREATE_HOST_DEFAULT_SETUP_SCRIPT = 'http://preseed.example.com/post_install.sh'

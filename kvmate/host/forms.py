@@ -1,14 +1,18 @@
 from django import forms
+from django.conf import settings
+
 from .models import Host
 
 class HostForm(forms.ModelForm):
     disksize = forms.IntegerField()
     iptype = forms.ChoiceField((('static', 'Static'), ('dynamic', 'Dynamic (using DHCP)'), ), label='Networking')
-    ip = forms.GenericIPAddressField(label='IP', required=False)
-    netmask = forms.GenericIPAddressField(required=False)
-    gateway = forms.GenericIPAddressField(required=False)
-    dns = forms.GenericIPAddressField(label='DNS Server', required=False)
-    domain = forms.CharField(label='Domain Name', required=False)
+    ip = forms.GenericIPAddressField(label='IP', default=settings.CREATE_HOST_DEFAULT_IP, required=False)
+    netmask = forms.GenericIPAddressField(required=False, default=settings.CREATE_HOST_DEFAULT_NETMASK)
+    gateway = forms.GenericIPAddressField(required=False, default=settings.CREATE_HOST_DEFAULT_GATEWAY)
+    dns = forms.GenericIPAddressField(label='DNS Server', required=False, default=settings.CREATE_HOST_DEFAULT_DNS)
+    domain = forms.CharField(label='Domain Name', required=False, default=settings.CREATE_HOST_DEFAULT_DOMAIN)
+    setup_script_url = forms.URLField(help_text='URL to a shell script that will be executed after installation',
+                                      default=settings.CREATE_HOST_DEFAULT_SETUP_SCRIPT)
 
     class Meta:
         model = Host

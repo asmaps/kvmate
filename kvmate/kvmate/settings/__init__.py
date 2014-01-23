@@ -1,4 +1,11 @@
-from .dev import * # set your production settings here
+import os
+import logging
+
+if os.environ['PROD']:
+    logging.info('Using production settings')
+    from .production import *
+else:
+    from .dev import *
 from .create import *
 from .vnc import *
 

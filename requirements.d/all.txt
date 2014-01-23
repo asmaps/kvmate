@@ -6,6 +6,4 @@ django-bootstrap-form
 django-celery
 celery[redis]
 numpy
-# for postgres
-psycopg2
 libvirt-python
