@@ -4,4 +4,4 @@ from .base import LOGGING
 DEBUG = False
 
 # set logging verbosity
-LOGGING = ['handlers']['file']['level'] = 'INFO'
+LOGGING['handlers']['file']['level'] = 'INFO'
