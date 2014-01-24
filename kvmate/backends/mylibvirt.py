@@ -10,13 +10,10 @@ from .tasks import start_websock
 class LibvirtBackend(object):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-
-    def __getattribute__(self, item):
-        # self.conn as singleton (makes initialisation without libvirt rights possible)
-        # this is usefull for development without libvirt rights)
-        if item == 'conn' and not hasattr(self, 'conn'):
+        try:
             self.conn = libvirt.open('qemu:///system')
-        return super(LibvirtBackend, self).__getattribute__(item)
+        except OSError, e:
+            logging.error('Error when initializing qemu connection: %s' % e)
 
     def _get_domain(self, name):
         '''
