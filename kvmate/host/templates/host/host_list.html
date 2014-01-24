@@ -11,11 +11,10 @@
             }
         }
         function toggleHost(host) {
+            $('a[id^="popover-' + host + '"]').popover('hide');
             $('#' + host + '-row').removeClass("danger success");
             $('#' + host + '-row').addClass("warning");
             $('.' + host + '-power-button').addClass('disabled');
-            $('a[id^="popover-' + host + '"]').popover('hide')
-
         }
     </script>
 {% endblock %}
@@ -92,7 +91,7 @@
                                         <div class="text-center">
                                             <a class="btn btn-danger" href="#"
                                                onclick="$.get('{% url 'action' host.name 'reboot' %}',
-                                                       function(data){showMessage(data);$('#popover-{{ host.name }}-shutdown').popover('hide');toggleHost('{{ host.name }}')}
+                                                       function(data){showMessage(data);toggleHost('{{ host.name }}')}
                                                        );return false;">Do it!</a>
                                         </div>
                                     </div>
