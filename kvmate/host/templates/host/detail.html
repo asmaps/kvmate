@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block 'head' %}
+    <title>kvmate - {{ object.name }}</title>
+{% endblock %}
+
+{% block 'content' %}
+    <div style="padding:0 15px">
+        <div class="col-md-1">
+            <a class="btn btn-default" href={% url 'host:overview' %}><span class="glyphicon glyphicon-chevron-left"></span>
+                Back</a>
+            <a class="btn btn-default" href={% url 'host:update' object.name %}><span
+                    class="glyphicon glyphicon-pencil"></span> Edit</a>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th colspan="2"><strong>General Data</strong></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td>{{ object.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Running</td>
+                        {% if object.is_on %}
+                            <td class="success">Yes{% else %}
+                            <td class="danger">No{% endif %}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-3">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th colspan="2"><strong>Performance</strong></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Number of virtual CPUs</td>
+                        <td>{{ object.vcpus }}</td>
+                    </tr>
+                    <tr>
+                        <td>Maximum amount of memory</td>
+                        <td>{{ memory_in_mb }}MB</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-3">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th colspan="2"><strong>Bootoptions</strong></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Autostart</td>
+                        {% if object.autostart %}
+                            <td class="success">Yes{% else %}
+                            <td class="danger">No{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td>Persistence</td>
+                        {% if object.persistent %}
+                            <td class="success">Yes{% else %}
+                            <td class="danger">No{% endif %}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

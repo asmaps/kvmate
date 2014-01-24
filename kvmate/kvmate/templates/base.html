@@ -18,8 +18,8 @@
                 <div class="navbar-header">
                     <a class="navbar-brand" href="/hosts">kvmate</a>
                 </div>
-                <li {% block 'ahosts' %}{% endblock %}><a href="{% url 'hosts' %}">Hosts</a></li>
-                <li {% block 'acreate' %}{% endblock %}><a href="{% url 'create' %}">Create</a></li>
+                <li {% block 'ahosts' %}{% endblock %}><a href="{% url 'host:overview' %}">Hosts</a></li>
+                <li {% block 'acreate' %}{% endblock %}><a href="{% url 'host:create' %}">Create</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% block 'navbar-right' %}

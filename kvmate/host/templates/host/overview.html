@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block 'head' %}
+    <title>kvmate - your hosts</title>
+{% endblock %}
+
+{% block 'ahosts' %}
+    class="active"
+{% endblock %}
+
+{% block 'navbar-right' %}
+    <form class="navbar-form navbar-left" role="search">
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="search hosts..." name="q">
+        </div>
+    </form>
+{% endblock %}
+
+{% block 'content' %}
+    <div style="padding:0 15px">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <div id="host_list">
+                    <script>
+                        $(function() {
+                            $('#host_list').load('{% url "host:overview_table_ajax" %}');
+                        })
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

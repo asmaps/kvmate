@@ -1,0 +1,128 @@
+<script type="text/javascript">
+    function showMessage(data) {
+        var messages = $('#messages-content');
+        if (messages.length && data.msg) {
+            messages.html(data.msg);
+        }
+    }
+    function toggleHost(host) {
+        $('a[id^="popover-' + host + '"]').popover('hide');
+        $('#' + host + '-row').removeClass("danger success");
+        $('#' + host + '-row').addClass("warning");
+        $('.' + host + '-power-button').addClass('disabled');
+    }
+    function refreshHostList() {
+        $('#host_list').load('{% url "host:overview_table_ajax" %}');
+    }
+</script>
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <th><strong>Name</strong></th>
+        <th><strong>Functions</strong></th>
+        <th><strong>Power</strong></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for host in object_list|dictsort:"name"|dictsortreversed:"is_on" %}
+        <tr id='{{ host.name }}-row' class="{% if host.is_on %}success{% else %}danger{% endif %}">
+            <td>{{ host.name }}</td>
+            <td>
+                <a class='btn btn-xs btn-primary' href='{% url 'host:info' host.name %}'><span
+                        class="glyphicon glyphicon-info-sign"></span> Overview</a>
+                <a class='btn btn-xs btn-primary{% if not user.is_authenticated or not host.is_on %} disabled{% endif %}'
+                   href='{% url 'vnc' host.name %}'><span class="glyphicon glyphicon-picture"></span>
+                    VNC</a>
+            </td>
+            <td id='{{ host.name }}-power'>
+                {% if host.is_on %}
+                    <a id="popover-{{ host.name }}-shutdown"
+                       class="btn btn-xs btn-danger {{ host.name }}-power-button{% if not user.is_authenticated %} disabled{% endif %}"
+                       href="#"><span class="glyphicon glyphicon-off"></span> Shutdown</a>
+                    <div id="{{ host.name }}-shutdown-head" class="hide">
+                        <strong>Shutdown the host "{{ host.name }}"</strong>
+                    </div>
+                    <div id="{{ host.name }}-shutdown-content" class="hide">
+                        <div class="text-center">
+                            <a class="btn btn-danger" href="#"
+                               onclick="$.get('{% url 'host:action' host.name 'shutdown' %}',
+                                       function(data){showMessage(data);refreshHostList()}
+                                       );return false;">Do it!</a>
+                        </div>
+                    </div>
+                    <script>
+                        $('#popover-{{ host.name }}-shutdown').popover({
+                            html: true,
+                            placement: 'left',
+                            title: function () {
+                                return $("#{{ host.name }}-shutdown-head").html();
+                            },
+                            content: function () {
+                                return $("#{{ host.name }}-shutdown-content").html();
+                            }
+                        });
+                    </script>
+                    <a id="popover-{{ host.name }}-reboot"
+                       class="btn btn-xs btn-danger {{ host.name }}-power-button{% if not user.is_authenticated %} disabled{% endif %}"
+                       href="#"><span class="glyphicon glyphicon-resize-vertical"></span> Reboot</a>
+                    <div id="{{ host.name }}-reboot-head" class="hide">
+                        <strong>Reboot the host "{{ host.name }}"</strong>
+                    </div>
+                    <div id="{{ host.name }}-reboot-content" class="hide">
+                        <div class="text-center">
+                            <a class="btn btn-danger" href="#"
+                               onclick="$.get('{% url 'host:action' host.name 'reboot' %}',
+                                       function(data){showMessage(data);refreshHostList()}
+                                       );return false;">Do it!</a>
+                        </div>
+                    </div>
+                    <script>
+                        $('#popover-{{ host.name }}-reboot').popover({
+                            html: true,
+                            placement: 'top',
+                            title: function () {
+                                return $("#{{ host.name }}-reboot-head").html();
+                            },
+                            content: function () {
+                                return $("#{{ host.name }}-reboot-content").html();
+                            }
+                        });
+                    </script>
+                    <a id="popover-{{ host.name }}-forceoff"
+                       class="btn btn-xs btn-danger {{ host.name }}-power-button{% if not user.is_authenticated %} disabled{% endif %}"
+                       href="#"><span class="glyphicon glyphicon-fire"></span> Forceoff</a>
+                    <div id="{{ host.name }}-forceoff-head" class="hide">
+                        <strong>Force the host "{{ host.name }}" off</strong>
+                    </div>
+                    <div id="{{ host.name }}-forceoff-content" class="hide">
+                        <div class="text-center">
+                            <a class="btn btn-danger" href="#"
+                               onclick="$.get('{% url 'host:action' host.name 'forceoff' %}',
+                                       function(data){showMessage(data);refreshHostList()}
+                                       );return false;">Do it!</a>
+                        </div>
+                    </div>
+                    <script>
+                        $('#popover-{{ host.name }}-forceoff').popover({
+                            html: true,
+                            placement: 'right',
+                            title: function () {
+                                return $("#{{ host.name }}-forceoff-head").html();
+                            },
+                            content: function () {
+                                return $("#{{ host.name }}-forceoff-content").html();
+                            }
+                        });
+                    </script>
+                {% else %}
+                    <a class='btn btn-xs btn-success {{ host.name }}-power-button{% if not user.is_authenticated %} disabled{% endif %}'
+                       href="#"
+                       onclick="$.get('{% url 'host:action' host.name 'start' %}',
+                               function(data){showMessage(data);refreshHostList()}
+                               );return false;">Start</a>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

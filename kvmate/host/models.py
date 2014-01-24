@@ -1,7 +1,17 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from backends.mylibvirt import LibvirtBackend
+from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
+
+try:
+    (modulename, classname) = settings.VIRTUALIZATION_BACKEND.rsplit('.', 1)
+    mod = __import__(modulename, fromlist=[classname])
+    print(mod)
+    VirtualizationBackend = getattr(mod, classname)
+except ImportError, e:
+    raise ImproperlyConfigured('Cannot import VIRTUALIZATION_BACKEND: %s' % e)
+
 
 class Host(models.Model):
     name = models.SlugField(unique=True, max_length=64)
@@ -12,7 +22,7 @@ class Host(models.Model):
     autostart = models.BooleanField(verbose_name="Autostart this host")
     persistent = models.BooleanField(verbose_name="Make persistent")
 
-    lvb = LibvirtBackend()
+    lvb = VirtualizationBackend()
     field_map = {
             'name' : lvb.set_name,
             'is_on' : lvb.set_state,

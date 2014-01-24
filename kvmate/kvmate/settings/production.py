@@ -5,3 +5,5 @@ DEBUG = False
 
 # set logging verbosity
 LOGGING['handlers']['file']['level'] = 'INFO'
+
+VIRTUALIZATION_BACKEND = 'backends.mylibvirt.LibvirtBackend'
