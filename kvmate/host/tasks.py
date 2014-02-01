@@ -24,7 +24,7 @@ def virtinstall(data):
     data['bridge'] = settings.BRIDGE_TYPE + ':' + settings.BRIDGE_NAME
     data['poolname'] = settings.STORAGEPOOL_NAME
     data['disksize'] = settings.DISKSIZE
-    if data['autostart']:
+    if data.get('autostart', False):
         data['autostartflag'] = "--autostart "
     else:
         data['autostartflag'] = ""
