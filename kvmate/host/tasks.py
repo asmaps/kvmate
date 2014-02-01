@@ -26,6 +26,8 @@ def virtinstall(data):
     data['disksize'] = settings.DISKSIZE
     if data['autostart']:
         data['autostartflag'] = "--autostart "
+    else:
+        data['autostartflag'] = ""
     if data['iptype'] == 'static':
         data['virtinstnetwork'] = 'netcfg/get_ipaddress=' + data['ip'] + ' netcfg/get_netmask=' + data['netmask'] + ' netcfg/get_gateway=' + data['gateway'] + ' netcfg/get_nameservers=' + data['dns'] + ' netcfg/disable_dhcp=true'
     elif data['iptype'] == 'dynamic':
