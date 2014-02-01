@@ -1,19 +1,17 @@
 import libvirt
 import logging
 
-from celery import shared_task
+from huey.djhuey import crontab, periodic_task, task
 import shlex
 from subprocess import call
 from django.template.loader import render_to_string
 
-from celery.task.schedules import crontab
-from celery.decorators import periodic_task
 from django.db import transaction
 from django.conf import settings
 
 from .models import Host
 
-@shared_task
+@task()
 def virtinstall(data):
     def render_to_file(template, filename, data):
         open(filename, "w").write(render_to_string(template, data))
@@ -50,10 +48,10 @@ def virtinstall(data):
     logger.info('running virtinstall with: ' + command)
     #FIXME: make configurable via settings
     import os
-    os.environ['HOME'] = '/home/kvmate/' # override ~ for ~/.virtinst
+    #os.environ['HOME'] = '/home/kvmate/' # override ~ for ~/.virtinst
     call(shlex.split(command))
 
-@shared_task
+@periodic_task(crontab(minute='*/10'))
 def update_hosts():
     '''
     Update the database
