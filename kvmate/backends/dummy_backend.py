@@ -1,11 +1,4 @@
 import logging
-import libvirt
-from xml.dom.minidom import parseString
-from celery.result import AsyncResult
-from django.core.exceptions import ObjectDoesNotExist
-from vnc.models import Vnc
-from .tasks import start_websock
-
 
 class DummyLibvirtBackend(object):
     def __init__(self):
