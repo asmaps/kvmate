@@ -1,7 +1,6 @@
-from celery import shared_task
+from huey.djhuey import task
 from .websockify import WebSocketProxy
 
-@shared_task
 def start_websock(target_port, listen_port):
     server = WebSocketProxy(
             target_host='localhost',
@@ -10,6 +9,6 @@ def start_websock(target_port, listen_port):
             listen_port=listen_port,
             verbose=True,
             daemon=False,
-            run_once=True,
+            run_once=False,
             )
     server.start_server()

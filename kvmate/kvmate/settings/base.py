@@ -7,21 +7,14 @@ https://docs.djangoproject.com/en/1.6/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
-# Celery settings
-import djcelery
 
-djcelery.setup_loader()
-BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = "redis"
-CELERYD_CONCURRENCY = 10
-
-from celery.schedules import crontab
-
-CELERYBEAT_SCHEDULE = {
-    'run-hostupdate-every-10min': {
-        'task': 'host.tasks.update_hosts',
-        'schedule': crontab(hour="*", minute="*/10", day_of_week="*"),
-    },
+HUEY = {
+    'backend': 'huey.backends.redis_backend',
+    'name': 'kvmate_huey',
+    'connection': {'host': 'localhost', 'port': 6379},
+    'always_eager': False,
+    # Options to pass into the consumer when running ``manage.py run_huey``
+    'consumer_options': {'workers': 4},
 }
 
 LOGIN_URL = '/login'
@@ -56,7 +49,7 @@ INSTALLED_APPS = (
     'kvmate',
     'host',
     'vnc',
-    'djcelery',
+    'huey.djhuey',
     'bootstrapform',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -135,6 +128,11 @@ LOGGING = {
             'level': 'DEBUG',
         },
         'vnc': {
+            'handlers': ['file'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
+        'huey.consumer': {
             'handlers': ['file'],
             'propagate': True,
             'level': 'DEBUG',
