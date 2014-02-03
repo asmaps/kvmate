@@ -27,7 +27,7 @@ class LibvirtBackend(object):
             print 'libvirt failed for host ' + name + ' with:'
             print str(e.get_error_code()) + ': ' + e.get_error_message()
 
-    def terminate_vnc(self, host):
+    def _terminate_vnc(self, host):
         '''
         Terminates the VNC Websocket process attached to a Host object
         '''
