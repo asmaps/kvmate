@@ -4,16 +4,6 @@ class DummyLibvirtBackend(object):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
-    def terminate_vnc(self, host):
-        '''
-        Terminates the VNC Websocket process attached to a Host object (shouldn't exist with DummyBackend)
-        '''
-        try:
-            host.vnc.delete()
-            host.save()
-        except ObjectDoesNotExist as e:
-            self.logger.info('tried deleting a nonexistant vnc database entry')
-
     def set_name(self, host, old_name):
         """
         Just say 'did it!'
