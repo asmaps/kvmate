@@ -2,8 +2,7 @@
 django==1.6
 django-braces
 django-bootstrap-form
-# celery
-django-celery
-celery[redis]
+# huey
+huey
 numpy
 libvirt-python
