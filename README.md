@@ -22,6 +22,11 @@ interact with the hypervisor.
 * Support more backends (like XEN or OpenVZ)
 * Live migration of VMs between physical hosts
 
+### Community
+Join us via IRC on freenode:
+* Server: chat.freenode.net:6667
+* Channel: #kvmate
+
 ### License
 This project includes a [LICENSE](LICENSE) file which applies to all code written for this project 
 (MIT license, in short). 
