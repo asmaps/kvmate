@@ -29,7 +29,7 @@ def prepare_deploy():
 def deploy():
     if not confirm("Deploying to production. Continue?"):
         sys.exit(0)
-    with cd(code_dir):
-        run("git pull")
+    with cd(env.code_dir):
+        sudo("git pull", user="kvmate")
     sudo("kill -HUP `cat /home/kvmate/run/gunicorn.pid`")
     sudo("supervisorctl restart kvmate_huey")
