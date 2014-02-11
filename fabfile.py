@@ -26,10 +26,11 @@ def prepare_deploy():
     push()
 
 @task
-def deploy():
+def deploy(refresh_huey=False):
     if not confirm("Deploying to production. Continue?"):
         sys.exit(0)
     with cd(env.code_dir):
         sudo("git pull", user="kvmate")
     sudo("kill -HUP `cat /home/kvmate/run/gunicorn.pid`")
-    sudo("supervisorctl restart kvmate_huey")
+    if refresh_huey:
+        sudo("supervisorctl restart kvmate_huey")
